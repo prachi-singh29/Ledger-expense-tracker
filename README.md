@@ -89,48 +89,6 @@ URL in `VITE_API_URL` (defaults to `http://localhost:8080`).
 
 ---
 
-## 3. Deploying to Render
-
-Render doesn't offer a managed MySQL database — only PostgreSQL. To keep
-MySQL as requested, use a free/low-cost external MySQL host such as
-**Railway**, **Aiven**, or **Clever Cloud**, and point the backend at it.
-(If you'd rather stay entirely inside Render, the backend can be switched
-to PostgreSQL by swapping the `mysql-connector-j` dependency for
-`org.postgresql:postgresql` and updating the datasource URL — everything
-else in the code stays the same since JPA is database-agnostic.)
-
-### Option A — One-click with `render.yaml`
-
-1. Push this project to a GitHub repository.
-2. In the Render dashboard, choose **New → Blueprint** and point it at your repo.
-   Render will read `render.yaml` and create both services.
-3. Fill in the flagged environment variables when prompted:
-   - **Backend:** `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`,
-     `SPRING_DATASOURCE_PASSWORD`, `CORS_ALLOWED_ORIGINS` (your frontend's
-     Render URL, once known)
-   - **Frontend:** `VITE_API_URL` (your backend's Render URL, once known)
-4. Deploy. Since the two URLs depend on each other, deploy once, copy each
-   service's URL, then update the other service's env var and redeploy.
-
-### Option B — Manual setup
-
-**Backend (Web Service, Docker):**
-1. New → Web Service → connect your repo → set **Root Directory** to `backend`.
-2. Runtime: **Docker** (it will pick up `backend/Dockerfile` automatically).
-3. Add environment variables: `SPRING_DATASOURCE_URL`,
-   `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`,
-   `CORS_ALLOWED_ORIGINS`.
-4. Health check path: `/api/health`.
-
-**Frontend (Static Site):**
-1. New → Static Site → connect your repo → set **Root Directory** to `frontend`.
-2. Build command: `npm install && npm run build`
-3. Publish directory: `dist`
-4. Add environment variable: `VITE_API_URL` = your backend's Render URL.
-5. Add a rewrite rule `/*` → `/index.html` so React Router works on refresh.
-
----
-
 ## Tooling used in this project
 
 Git · GitHub · Postman · IntelliJ IDEA (backend) · VS Code (frontend) · MySQL Workbench
